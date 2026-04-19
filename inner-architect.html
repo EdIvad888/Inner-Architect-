@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#06070f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Inner Architect">
+<title>The Inner Architect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06070f;--surface:#0d0e1e;--surface2:#111225;--border:#1e1f3a;--gold:#c9a455;--gold-dim:#7a622d;--text:#ddd4c0;--muted:#6a6480;--danger:#8b2020;--dt:#f87171;--safe:#2d5a4a;--st:#6fcfaf;--nav:64px;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;width:100%;background:var(--bg);color:var(--text);font-family:'Crimson Text',Georgia,serif;overflow:hidden;overscroll-behavior:none}
+::-webkit-scrollbar{width:2px}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 80% 55% at 50% 42%,rgba(201,164,85,.05) 0%,transparent 70%)}
+#bg svg{position:absolute;inset:0;width:100%;height:100%}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;z-index:1}
+header{flex-shrink:0;padding:calc(var(--sat) + 12px) 20px 12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(6,7,15,.92);backdrop-filter:blur(14px)}
+.lw{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase}
+.ls{font-family:'Cinzel',serif;font-size:.44rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+#scroll{flex:1;overflow-y:auto;overflow-x:hidden;padding:20px 18px calc(var(--nav) + var(--sab) + 24px);-webkit-overflow-scrolling:touch}
+nav{flex-shrink:0;height:calc(var(--nav) + var(--sab));padding-bottom:var(--sab);border-top:1px solid var(--border);background:rgba(13,14,30,.97);backdrop-filter:blur(16px);display:flex;z-index:20}
+.nb{flex:1;background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--muted);transition:color .2s;padding:8px 4px}
+.nb.on{color:var(--gold)}.ni{font-size:1.2rem;line-height:1}.nl{font-family:'Cinzel',serif;font-size:.5rem;letter-spacing:.1em;text-transform:uppercase}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes breathe{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.14);opacity:1}}
+@keyframes glow{0%,100%{box-shadow:0 0 0 rgba(201,164,85,0)}50%{box-shadow:0 0 40px rgba(201,164,85,.12)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulseR{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0)}50%{box-shadow:0 0 18px rgba(239,68,68,.3)}}
+.page{animation:fadeUp .35s ease}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:14px}
+.gc{background:linear-gradient(135deg,#0a0b1a,#10112a);border:1px solid var(--gold-dim);border-radius:14px;padding:18px;margin-bottom:14px;animation:glow 6s ease-in-out infinite}
+.st{font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:14px}
+.sl{font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.sc{color:var(--gold);font-size:.9rem}
+.vs{font-style:italic;font-size:1.05rem;line-height:1.65;border-left:2px solid var(--gold);padding-left:14px;color:var(--text)}
+.vss{font-size:.75rem;color:var(--gold-dim);margin-top:5px;letter-spacing:.04em}
+textarea,input[type=text],input[type=password]{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:'Crimson Text',Georgia,serif;font-size:1rem;line-height:1.55;resize:vertical;outline:none;transition:border-color .2s}
+textarea:focus,input:focus{border-color:var(--gold-dim)}
+.btn{display:block;width:100%;padding:13px;background:linear-gradient(135deg,#8b6914,#c9a455);border:none;border-radius:10px;color:#080400;font-family:'Cinzel',serif;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;cursor:pointer;margin-top:12px;transition:opacity .2s}
+.btn:disabled{opacity:.4;cursor:default}
+.bg2{display:block;width:100%;padding:11px;background:none;border:1px solid var(--border);border-radius:10px;color:var(--muted);font-family:'Crimson Text',serif;font-size:.9rem;cursor:pointer;margin-top:8px;transition:border-color .2s}
+.cr{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px;cursor:pointer}
+.cb{width:22px;height:22px;border-radius:6px;border:1px solid var(--border);flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.cb.on{background:var(--gold);border-color:var(--gold)}.cb.on::after{content:'✓';color:#0a0600;font-size:.75rem;font-weight:700}
+.pb{height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px}
+.pf{height:100%;background:var(--gold);border-radius:3px;transition:width .6s ease}
+.dd{display:flex;gap:4px;margin-bottom:14px}
+.dt2{flex:1;height:5px;border-radius:3px;background:var(--border);transition:background .3s}
+.dt2.on{background:var(--gold)}
+.tn{font-family:'Cinzel',serif;font-size:3.5rem;color:var(--gold);text-align:center;animation:breathe 5s ease-in-out infinite}
+.rb{border-radius:12px;padding:16px;margin-bottom:12px;animation:fadeUp .4s ease}
+#eov{display:none;position:fixed;inset:0;z-index:100;background:rgba(6,7,15,.98);flex-direction:column;align-items:center;justify-content:center;padding:28px;animation:fadeUp .3s ease}
+#eov.on{display:flex}
+.bc{width:130px;height:130px;border-radius:50%;border:1px solid rgba(201,164,85,.35);background:radial-gradient(circle,rgba(201,164,85,.07),transparent);display:flex;align-items:center;justify-content:center;margin-bottom:32px;transition:all 1.2s ease}
+.bc.ex{transform:scale(1.4);border-color:rgba(201,164,85,.6);background:radial-gradient(circle,rgba(201,164,85,.14),transparent)}
+#fab{position:fixed;bottom:calc(var(--nav) + var(--sab) + 14px);right:16px;width:46px;height:46px;border-radius:50%;z-index:30;background:#1a0808;border:1px solid var(--danger);color:var(--dt);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;animation:pulseR 3s ease-in-out infinite}
+.sr{display:flex;gap:10px;margin-bottom:14px}
+.sb{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center}
+.sn{font-family:'Cinzel',serif;font-size:1.8rem;color:var(--gold);line-height:1}
+.sl2{font-family:'Cinzel',serif;font-size:.48rem;color:var(--muted);letter-spacing:.16em;text-transform:uppercase;margin-top:5px}
+.qc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;margin-bottom:10px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;transition:border-color .2s}
+.qc:active{border-color:var(--gold-dim);transform:scale(.99)}
+.qt{font-size:.95rem}.qs{font-size:.75rem;color:var(--muted);margin-top:3px}.qa{color:var(--gold-dim);font-size:1.3rem;margin-left:10px}
+.sp{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+.sbox{margin-top:12px;padding:12px 14px;background:var(--surface2);border-radius:10px;border-left:2px solid var(--gold)}
+.slbl{font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold-dim);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px}
+.pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:.68rem;letter-spacing:.06em;font-family:'Cinzel',serif;margin-top:8px}
+.es{text-align:center;padding:50px 20px}
+.ei{font-size:2.5rem;color:var(--gold-dim);margin-bottom:16px}
+.et{font-size:.9rem;color:var(--muted);font-style:italic;line-height:1.6}
+label.lb{display:block;font-size:.78rem;color:var(--muted);margin-bottom:6px}
+.ring-w{position:relative;display:inline-block}
+.ring-w span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold)}
+#ib{display:none;position:fixed;top:0;left:0;right:0;z-index:90;background:linear-gradient(135deg,#0d0e1e,#111226);border-bottom:1px solid var(--gold-dim);padding:calc(var(--sat) + 10px) 18px 12px;flex-direction:column;gap:8px}
+#ib.on{display:flex}
+</style>
+</head>
+<body>
+<div id="bg"><svg viewBox="0 0 420 800" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="rg" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#c9a455" stop-opacity=".045"/><stop offset="100%" stop-color="#c9a455" stop-opacity="0"/></radialGradient></defs><rect width="420" height="800" fill="url(#rg)"/><circle cx="210" cy="360" r="180" fill="none" stroke="#c9a455" stroke-width=".5" opacity=".06"/><circle cx="210" cy="360" r="260" fill="none" stroke="#c9a455" stroke-width=".4" opacity=".04"/><circle cx="210" cy="360" r="340" fill="none" stroke="#c9a455" stroke-width=".3" opacity=".025"/><line x1="210" y1="0" x2="210" y2="800" stroke="#c9a455" stroke-width=".25" opacity=".04"/><line x1="0" y1="360" x2="420" y2="360" stroke="#c9a455" stroke-width=".25" opacity=".04"/><line x1="0" y1="0" x2="420" y2="800" stroke="#c9a455" stroke-width=".2" opacity=".03"/><line x1="420" y1="0" x2="0" y2="800" stroke="#c9a455" stroke-width=".2" opacity=".03"/><polygon points="210,180 380,450 40,450" fill="none" stroke="#c9a455" stroke-width=".4" opacity=".05"/><polygon points="210,540 40,270 380,270" fill="none" stroke="#c9a455" stroke-width=".4" opacity=".05"/></svg></div>
+
+<div id="app">
+  <header>
+    <div><div class="lw">The Inner Architect</div><div class="ls">As within · so without</div></div>
+    <div style="display:flex;align-items:center;gap:14px">
+      <div style="text-align:center"><div id="hstreak" style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold)">0</div><div style="font-family:'Cinzel',serif;font-size:.42rem;color:var(--muted);letter-spacing:.1em">DAYS</div></div>
+      <div class="ring-w"><svg id="rsvg" width="44" height="44" viewBox="0 0 44 44"><circle cx="22" cy="22" r="18" fill="none" stroke="var(--border)" stroke-width="3"/><circle id="rfill" cx="22" cy="22" r="18" fill="none" stroke="var(--gold)" stroke-width="3" stroke-dasharray="0 113" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dasharray .7s ease"/></svg><span id="rlbl">0</span></div>
+    </div>
+  </header>
+  <div id="scroll">
+    <div id="ph" class="page"></div>
+    <div id="pm" class="page" style="display:none"></div>
+    <div id="pc" class="page" style="display:none"></div>
+    <div id="pe" class="page" style="display:none"></div>
+    <div id="pl" class="page" style="display:none"></div>
+    <div id="ps" class="page" style="display:none"></div>
+  </div>
+  <nav>
+    <button class="nb on" data-t="h"><span class="ni">⬡</span><span class="nl">Temple</span></button>
+    <button class="nb" data-t="m"><span class="ni">☀</span><span class="nl">Morning</span></button>
+    <button class="nb" data-t="c"><span class="ni">✦</span><span class="nl">Catch</span></button>
+    <button class="nb" data-t="e"><span class="ni">☽</span><span class="nl">Evening</span></button>
+    <button class="nb" data-t="l"><span class="ni">◈</span><span class="nl">Evidence</span></button>
+  </nav>
+</div>
+
+<button id="fab" onclick="showE()">⚡</button>
+
+<div id="eov">
+  <div style="font-family:'Cinzel',serif;font-size:.6rem;letter-spacing:.25em;color:var(--dt);text-transform:uppercase;margin-bottom:28px">Emergency Tool · I Am With You</div>
+  <div class="bc" id="bc"><div style="text-align:center"><div id="blbl" style="font-family:'Cinzel',serif;font-size:.7rem;color:var(--gold);letter-spacing:.1em">Breathe In</div></div></div>
+  <div style="max-width:300px;text-align:center;margin-bottom:22px">
+    <div class="vs" style="border:none;padding:0;text-align:center;font-size:1.05rem;margin-bottom:8px">"This feeling is old. It is not the truth."</div>
+    <div class="vs" style="border:none;padding:0;text-align:center;font-size:1rem">"I am already becoming someone who is valued."</div>
+  </div>
+  <div style="max-width:280px;text-align:left;margin-bottom:24px"><div class="vs">"I will fear no evil — for I am not alone."</div><div class="vss" style="margin-top:5px">— Psalm 23:4</div></div>
+  <div style="max-width:280px;text-align:center;font-size:.8rem;color:var(--muted);line-height:1.7;margin-bottom:28px">Hand on chest. Follow the breath.<br>The feeling is real. The story beneath it is not.<br><span style="color:var(--gold-dim);font-style:italic">With hardship comes ease. — Quran 94:5–6</span></div>
+  <button onclick="hideE()" style="background:none;border:1px solid var(--border);border-radius:10px;padding:12px 36px;color:var(--muted);font-family:'Cinzel',serif;font-size:.7rem;letter-spacing:.14em;cursor:pointer">I Am Steady · Return</button>
+</div>
+
+<div id="ib">
+  <div style="font-family:'Cinzel',serif;font-size:.65rem;color:var(--gold);letter-spacing:.12em">INSTALL THE APP</div>
+  <div style="font-size:.82rem;color:var(--muted)">Tap <strong style="color:var(--text)">⋮ menu</strong> → <strong style="color:var(--text)">Add to Home screen</strong> in Chrome to install as a native Android app.</div>
+  <button onclick="document.getElementById('ib').classList.remove('on')" style="background:none;border:none;color:var(--muted);font-size:.8rem;cursor:pointer;text-align:left;padding:0">Dismiss</button>
+</div>
+
+<script>
+const DECL="I am a gifted audio professional surrounded by mentors who see, value and elevate me.";
+const QQ=[
+  {t:"As a man thinketh in his heart, so is he.",s:"Proverbs 23:7"},
+  {t:"It is done unto you as you believe.",s:"Matthew 9:29"},
+  {t:"Allah will not change the condition of a people until they change what is within themselves.",s:"Quran 13:11"},
+  {t:"As above, so below. As within, so without.",s:"Hermes Trismegistus"},
+  {t:"What you seek is seeking you.",s:"Rumi"},
+  {t:"All that we are is the result of what we have thought.",s:"Dhammapada"},
+  {t:"To the mind that is still, the whole universe surrenders.",s:"Lao Tzu"},
+  {t:"You are what your deep, driving desire is.",s:"Brihadaranyaka Upanishad"},
+  {t:"You have power over your mind — not outside events.",s:"Marcus Aurelius"},
+  {t:"The Kingdom of God is within you.",s:"Luke 17:21"},
+  {t:"Assume the feeling of the wish fulfilled.",s:"Neville Goddard"},
+  {t:"No weapon formed against you shall prosper.",s:"Isaiah 54:17"},
+  {t:"With hardship comes ease. With hardship comes ease.",s:"Quran 94:5–6"},
+  {t:"You are fearfully and wonderfully made.",s:"Psalm 139:14"},
+  {t:"I have called you by name. You are mine.",s:"Isaiah 43:1"},
+  {t:"Be still and know.",s:"Psalm 46:10"},
+  {t:"We are God's masterpiece, created for good works.",s:"Ephesians 2:10"},
+  {t:"Do not lose hope in the mercy of God.",s:"Quran 39:53"},
+  {t:"The obstacle is the way.",s:"Marcus Aurelius"},
+  {t:"Peace I leave with you. My peace I give you.",s:"John 14:27"},
+  {t:"Ask and it shall be given. Seek and you shall find.",s:"Matthew 7:7"},
+  {t:"I can do all things through the strength given to me.",s:"Philippians 4:13"},
+  {t:"Even after all this time, the sun never says to the earth: you owe me.",s:"Hafiz"},
+];
+const SEALS={
+  unwelcome:{v:"I have called you by name. You are mine.",s:"Isaiah 43:1"},
+  notSmart:{v:"I will give you a mouth and wisdom none can withstand.",s:"Luke 21:15"},
+  unsafe:{v:"No weapon formed against you shall prosper.",s:"Isaiah 54:17"},
+  fraud:{v:"We are God's masterpiece, created for good works.",s:"Ephesians 2:10"},
+  happy:{v:"With hardship comes ease. With hardship comes ease.",s:"Quran 94:5–6"},
+};
+
+// Full offline catch processor data
+const CLUSTERS = {
+  unwelcome: {
+    label: "Unwelcome / Unworthy",
+    emoji: "👁",
+    beliefs: ["I'm not welcome","People don't like having me around","I'm not worth it","I'm not man enough","I'm plain / not interesting","People think badly of me"],
+    flips: [
+      { old:"I'm not welcome", new:"I am welcome, wanted, and chosen wherever I go." },
+      { old:"People don't like having me around", new:"My presence is a gift and people feel it." },
+      { old:"I'm not worth it", new:"I am deeply worthy of love, attention, and belonging." },
+      { old:"I'm not man enough", new:"I am exactly the man I need to be, and I am becoming more." },
+      { old:"I'm plain / not interesting", new:"I am compelling, distinctive, and genuinely engaging." },
+      { old:"People think badly of me", new:"I stand in my truth and need no defence." },
+    ],
+    verse:"I have called you by name. You are mine.", src:"Isaiah 43:1",
+    tradition:"Biblical",
+    teacher:"Neville Goddard",
+    teacherLine:"Assume the feeling of being welcome. Live from that assumption — and watch reality rearrange itself.",
+    anchor:"Hand on chest. One breath. Feel what it would feel like to walk into a room and be genuinely welcome. Hold that for 30 seconds.",
+    emergency:"I have called you by name. You are mine. — Isaiah 43:1",
+  },
+  notSmart: {
+    label: "Not Smart / Language",
+    emoji: "🧠",
+    beliefs: ["My English is bad","I sound stupid","I'm slow to understand","I'm not intelligent","I'm afraid I won't understand","I'll say the wrong thing"],
+    flips: [
+      { old:"My English is bad", new:"My voice carries clarity and people listen." },
+      { old:"I sound stupid", new:"I am clear, considered, and worth listening to." },
+      { old:"I'm slow to understand", new:"I think deeply and arrive at the truth." },
+      { old:"I'm not intelligent", new:"My intelligence is real, specific, and uniquely mine." },
+      { old:"I'm afraid I won't understand", new:"Understanding comes to me at exactly the right moment." },
+      { old:"I'll say the wrong thing", new:"I will give you a mouth and wisdom — and so it is." },
+    ],
+    verse:"I will give you a mouth and wisdom that none of your adversaries will be able to withstand.", src:"Luke 21:15",
+    tradition:"Biblical",
+    teacher:"Napoleon Hill",
+    teacherLine:"Repeat with feeling: I am clear. I am understood. I communicate with power. Say it until you feel it.",
+    anchor:"Say the New Truth out loud — 3 times, slowly. Put your hand on your chest. Feel the words land.",
+    emergency:"If any of you lacks wisdom, ask God — who gives generously to all. — James 1:5",
+  },
+  unsafe: {
+    label: "Unsafe Around People",
+    emoji: "🛡",
+    beliefs: ["People want to attack me","People are plotting against me","Women are dangerous","People despise me","People don't respect me","People have bad intentions"],
+    flips: [
+      { old:"People want to attack me", new:"I am safe. I move through the world protected and guided." },
+      { old:"People are plotting against me", new:"I am surrounded by people who wish me well." },
+      { old:"Women are dangerous", new:"I relate to people from safety and I attract those who honour me." },
+      { old:"People despise me", new:"I command natural respect by being fully myself." },
+      { old:"People don't respect me", new:"Respect flows toward me as I respect myself." },
+      { old:"People have bad intentions", new:"Most people are doing their best — and I am safe." },
+    ],
+    verse:"No weapon formed against you shall prosper.", src:"Isaiah 54:17",
+    tradition:"Biblical / Hermetic",
+    teacher:"David Bayer",
+    teacherLine:"That fear is Primal Mind running its protection program. It is not the truth. You are safe. You have always been safe.",
+    anchor:"Feel your feet on the ground. One slow breath. Say silently: I am safe in this moment. This is the only moment that exists.",
+    emergency:"I will fear no evil — for I am not alone. — Psalm 23:4",
+  },
+  fraud: {
+    label: "Fraud / Inadequate",
+    emoji: "⚡",
+    beliefs: ["I'm a fraud","Others are better than me","I'm not doing enough","I'm lazy","I'm cheap","I'm less capable than anyone"],
+    flips: [
+      { old:"I'm a fraud", new:"I am on my own path. My contribution is uniquely mine." },
+      { old:"Others are better than me", new:"I am not in competition. I am in expression." },
+      { old:"I'm not doing enough", new:"What I am doing is enough. What I'm becoming is already in motion." },
+      { old:"I'm lazy", new:"I show up every day. That is the definition of discipline." },
+      { old:"I'm cheap", new:"I am generous — with my gifts, my time, my energy." },
+      { old:"I'm less capable than anyone", new:"My capabilities are real, growing, and uniquely mine." },
+    ],
+    verse:"We are God's masterpiece, created to do good works.", src:"Ephesians 2:10",
+    tradition:"Biblical / Vedic",
+    teacher:"Bob Proctor",
+    teacherLine:"You were born rich — with gifts, with potential, with a unique frequency the world has never seen. Stop comparing. Start expressing.",
+    anchor:"Close your eyes. 30 seconds. See yourself doing your work with quiet confidence. Feel what that version of you feels.",
+    emergency:"You are fearfully and wonderfully made. — Psalm 139:14",
+  },
+  happy: {
+    label: "Can't Be Happy / Scarcity",
+    emoji: "☀",
+    beliefs: ["I can't be happy","Relationships cause suffering","I'm always broke","My parents ruined my life","I don't deserve good things","Life is against me"],
+    flips: [
+      { old:"I can't be happy", new:"Happiness is my natural state. I am returning to it." },
+      { old:"Relationships cause suffering", new:"I am capable of love that is free, safe, and mutual." },
+      { old:"I'm always broke", new:"Abundance flows toward me as I align with my real value." },
+      { old:"My parents ruined my life", new:"My life is mine. The past is material — not destiny." },
+      { old:"I don't deserve good things", new:"Peace and good things are my birthright." },
+      { old:"Life is against me", new:"Life is conspiring in my favour — always." },
+    ],
+    verse:"With hardship comes ease. With hardship comes ease.", src:"Quran 94:5–6",
+    tradition:"Quranic / Sufi",
+    teacher:"Neville Goddard",
+    teacherLine:"What you seek is seeking you. The life you want is already moving toward you. Assume it. Sleep in it tonight.",
+    anchor:"Put both hands on your heart. Take one long breath. Feel what peace in your chest would feel like. Stay there for 30 seconds.",
+    emergency:"Peace I leave with you. My peace I give you. — John 14:27",
+  },
+};
+
+// STORAGE
+const dk=()=>new Date().toISOString().split('T')[0];
+const S={g(k){try{const v=localStorage.getItem(k);return v?JSON.parse(v):null}catch{return null}},s(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+// STATE
+let G={tab:'h',daily:{morning:{},evening:{},catches:[]},ev:[],streak:0,key:'',quote:QQ[Math.floor(Math.random()*QQ.length)],dc:0,mi:null,bt:null,bi:0,ci:''};
+
+function load(){G.daily=S.g('ia-d-'+dk())||{morning:{},evening:{},catches:[]};G.ev=S.g('ia-ev')||[];G.streak=S.g('ia-st')||0;G.key=S.g('ia-k')||'';G.dc=G.daily.morning?.declarationCount||0;}
+function sd(){S.s('ia-d-'+dk(),G.daily);}
+
+function prog(){
+  const m=G.daily.morning||{},e=G.daily.evening||{};
+  return [m.catch,m.newTruth,m.declarationDone,m.meditationDone,m.omraamDone,m.creative,e.evidence,e.sleepDone,(G.daily.catches||[]).length>0].filter(Boolean).length;
+}
+
+function uh(){
+  const d=prog(),t=9,c=2*Math.PI*18,p=d/t;
+  document.getElementById('rfill').setAttribute('stroke-dasharray',`${p*c} ${c}`);
+  document.getElementById('rlbl').textContent=d;
+  document.getElementById('hstreak').textContent=G.streak;
+}
+
+// NAV
+function go(t){
+  G.tab=t;
+  ['h','m','c','e','l','s'].forEach(x=>{const el=document.getElementById('p'+x);if(el)el.style.display='none';});
+  const pg=document.getElementById('p'+t);if(pg)pg.style.display='block';
+  document.querySelectorAll('.nb').forEach(b=>{b.classList.toggle('on',b.dataset.t===t);});
+  render(t);
+  document.getElementById('scroll').scrollTop=0;
+}
+document.querySelectorAll('.nb').forEach(b=>b.addEventListener('click',()=>go(b.dataset.t)));
+
+function render(t){
+  const el=document.getElementById('p'+t);
+  if(t==='h')rHome(el);
+  else if(t==='m')rMorn(el);
+  else if(t==='c')rCatch(el);
+  else if(t==='e')rEve(el);
+  else if(t==='l')rLog(el);
+  else if(t==='s')rSet(el);
+  uh();
+}
+
+// HOME
+function rHome(el){
+  const d=prog(),t=9,p=Math.round(d/t*100),hr=new Date().getHours();
+  const gr=hr<12?"The morning is sacred.":hr<17?"The afternoon is your canvas.":"The evening calls you inward.";
+  el.innerHTML=`
+<div style="margin-bottom:18px;text-align:center">
+  <div style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:10px">${gr}</div>
+  <div class="gc">
+    <div style="font-family:'Cinzel',serif;font-size:.58rem;letter-spacing:.18em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:12px">Today's Transmission</div>
+    <div class="vs" style="border:none;padding:0;text-align:center;font-size:1.08rem">"${G.quote.t}"</div>
+    <div class="vss" style="text-align:center;margin-top:8px">— ${G.quote.s}</div>
+  </div>
+</div>
+<div class="card" style="display:flex;align-items:center;gap:16px">
+  <div class="ring-w">
+    <svg width="58" height="58" viewBox="0 0 58 58"><circle cx="29" cy="29" r="23" fill="none" stroke="var(--border)" stroke-width="3.5"/><circle cx="29" cy="29" r="23" fill="none" stroke="var(--gold)" stroke-width="3.5" stroke-dasharray="${d/t*144.5} 144.5" stroke-linecap="round" style="transform:rotate(-90deg);transform-origin:50% 50%"/></svg>
+    <span style="font-size:.65rem">${d}</span>
+  </div>
+  <div style="flex:1">
+    <div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase">Today's Practice</div>
+    <div style="font-size:.82rem;color:var(--muted);margin-top:4px">${d}/${t} complete · ${p}%</div>
+    <div class="pb"><div class="pf" style="width:${p}%"></div></div>
+  </div>
+</div>
+<div class="sr">
+  <div class="sb"><div class="sn">${G.streak}</div><div class="sl2">Day Streak</div></div>
+  <div class="sb"><div class="sn">${(G.daily.catches||[]).length}</div><div class="sl2">Catches</div></div>
+  <div class="sb"><div class="sn">${G.ev.length}</div><div class="sl2">Evidence</div></div>
+</div>
+<div class="card" style="border-color:var(--gold-dim)">
+  <div class="st">Your Declaration</div>
+  <div style="font-style:italic;font-size:.97rem;line-height:1.65">"${DECL}"</div>
+</div>
+<div class="st">Begin</div>
+<div class="qc" onclick="go('m')"><div><div class="qt">☀ Morning Practice</div><div class="qs">Catch · Flip · Declare · Meditate</div></div><span class="qa">›</span></div>
+<div class="qc" onclick="go('c')"><div><div class="qt">✦ Process a Catch</div><div class="qs">AI-powered belief transformation</div></div><span class="qa">›</span></div>
+<div class="qc" onclick="go('e')"><div><div class="qt">☽ Evening Practice</div><div class="qs">Evidence · Sound · Sleep Scene</div></div><span class="qa">›</span></div>
+<div class="qc" style="background:#110808;border-color:var(--danger)" onclick="showE()"><div><div class="qt" style="color:var(--dt)">⚡ Emergency Tool</div><div class="qs" style="color:#7a3a3a">I'm triggered right now</div></div><span style="color:var(--danger);font-size:1.3rem">›</span></div>
+<div style="text-align:center;margin-top:24px"><button onclick="go('s')" style="background:none;border:none;color:var(--muted);font-size:.78rem;cursor:pointer">⚙ Settings &amp; API Key</button></div>`;
+}
+
+// MORNING
+function rMorn(el){
+  const m=G.daily.morning||{};
+  const td=[m.catch,m.newTruth,m.declarationDone,m.meditationDone,m.omraamDone,m.creative].filter(Boolean).length;
+  el.innerHTML=`
+<div class="st">🌅 Morning Practice</div>
+<div style="font-size:.78rem;color:var(--muted);margin-bottom:18px">${td}/6 steps · As within, so without.</div>
+<div class="card">
+  <div class="sl">I · Primal Mind Catch ${m.catch?'<span class="sc">✓</span>':''}</div>
+  <label class="lb">What is the fear voice saying today?</label>
+  <textarea id="mc" rows="3" placeholder="The old voice says...">${m.catch||''}</textarea>
+  <button class="btn" onclick="sm('catch',document.getElementById('mc').value)">Save Catch</button>
+  ${m.catch?`<div style="margin-top:10px;font-size:.78rem;color:var(--muted);font-style:italic">Stoic premeditatio — caught, named, observed.</div>`:''}
+</div>
+<div class="card">
+  <div class="sl">II · The New Truth ${m.newTruth?'<span class="sc">✓</span>':''}</div>
+  <label class="lb">The opposite — as already true, right now:</label>
+  <textarea id="mt" rows="3" placeholder="The New Truth is...">${m.newTruth||''}</textarea>
+  <button class="btn" onclick="sm('newTruth',document.getElementById('mt').value)">Seal the New Truth</button>
+  ${m.newTruth?`<div class="sbox" style="margin-top:12px"><div class="slbl">Sacred Seal</div><div class="vs">"As a man thinketh in his heart, so is he."</div><div class="vss" style="margin-top:4px">— Proverbs 23:7</div></div>`:''}
+</div>
+<div class="card">
+  <div class="sl">III · Declaration × 10 ${m.declarationDone?'<span class="sc">✓</span>':''}</div>
+  <div style="font-style:italic;font-size:.95rem;line-height:1.6;margin-bottom:14px">"${DECL}"</div>
+  <div class="dd">${Array.from({length:10}).map((_,i)=>`<div class="dt2${i<G.dc?' on':''}" id="dot${i}"></div>`).join('')}</div>
+  <div style="text-align:center;font-family:'Cinzel',serif;font-size:1.5rem;color:var(--gold);margin-bottom:12px" id="dcnt">${G.dc}/10</div>
+  ${G.dc<10?`<button class="btn" onclick="spk()">Speak It (${G.dc+1} of 10)</button>`:`<div style="text-align:center;font-family:'Cinzel',serif;font-size:.74rem;color:var(--gold);letter-spacing:.1em">✦ COMPLETE · Napoleon Hill fulfilled. ✦</div>`}
+  <div style="margin-top:10px;font-size:.75rem;color:var(--muted);font-style:italic">Vedic mantra · Egyptian incantation · Hill's autosuggestion — all one practice.</div>
+</div>
+<div class="card" id="mcard">
+  <div class="sl">IV · Feeling Meditation (3 min) ${m.meditationDone?'<span class="sc">✓</span>':''}</div>
+  <div style="font-size:.83rem;color:var(--muted);margin-bottom:14px;line-height:1.6">Close your eyes. Generate the feeling of being valued — in your chest, not your head. Dispenza's emotion-as-blueprint. Buddhist breath. Taoist stillness.</div>
+  <div id="minn">${m.meditationDone?`<div style="text-align:center;color:var(--gold);font-family:'Cinzel',serif;font-size:.78rem;letter-spacing:.1em">✦ Meditation Complete</div>`:`<button class="btn" onclick="startMed()">Begin 3-Minute Meditation</button>`}</div>
+</div>
+<div class="card">
+  <div class="sl">V · Omraam Morning Touch ${m.omraamDone?'<span class="sc">✓</span>':''}</div>
+  <div style="font-style:italic;font-size:.92rem;line-height:1.65;color:var(--text);margin-bottom:14px">Before anything else: one conscious breath with the light. One moment of reverence. The day begins from your inner court.</div>
+  <div class="cr" onclick="tog()">
+    <div class="cb${m.omraamDone?' on':''}" id="ocb"></div>
+    <div><div style="font-size:.95rem;line-height:1.45${m.omraamDone?';color:var(--muted);text-decoration:line-through':''}">I took my moment of reverence</div><div style="font-size:.75rem;color:var(--muted);margin-top:2px">Omraam Aïvanhov · The inner court is the real throne</div></div>
+  </div>
+</div>
+<div class="st" style="margin-top:6px">🎧 Creative Block</div>
+<div class="card">
+  <div class="sl">Creative Touch ${m.creative?'<span class="sc">✓</span>':''}</div>
+  <label class="lb">Open the DAW or touch the piano. No goal. One sound. What happened?</label>
+  <textarea id="mcr" rows="3" placeholder="I made / touched / heard...">${m.creative||''}</textarea>
+  <button class="btn" onclick="sm('creative',document.getElementById('mcr').value)">Log It</button>
+  <div style="margin-top:10px;font-size:.76rem;color:var(--muted);font-style:italic">Wu wei — Taoist effortless action. The Tao does not force.</div>
+  <label class="lb" style="margin-top:14px">What did the fear voice say before you started?</label>
+  <textarea id="mfv" rows="2" placeholder="Before I started, the old voice said...">${m.fearVoice||''}</textarea>
+  <button class="bg2" onclick="sm('fearVoice',document.getElementById('mfv').value)">Save Fear Voice</button>
+</div>`;
+}
+
+function sm(f,v){if(!v.trim())return;G.daily.morning=G.daily.morning||{};G.daily.morning[f]=v;sd();uh();rMorn(document.getElementById('pm'));}
+function spk(){if(G.dc>=10)return;G.dc++;G.daily.morning.declarationCount=G.dc;if(G.dc>=10)G.daily.morning.declarationDone=true;sd();const d=document.getElementById('dot'+(G.dc-1));if(d)d.classList.add('on');const c=document.getElementById('dcnt');if(c)c.textContent=G.dc+'/10';if(G.dc>=10)rMorn(document.getElementById('pm'));uh();}
+function startMed(){if(G.mi)return;let t=180;const inn=document.getElementById('minn');if(!inn)return;function rf(){const m=Math.floor(t/60),s=String(t%60).padStart(2,'0');inn.innerHTML=`<div class="tn">${m}:${s}</div><div style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:12px;font-style:italic">Breathe. Feel. Let the new reality take root.<br>Dispenza · Buddhist breath · Taoist stillness.</div>`;}
+rf();G.mi=setInterval(()=>{t--;if(t<=0){clearInterval(G.mi);G.mi=null;G.daily.morning.meditationDone=true;sd();uh();rMorn(document.getElementById('pm'));}else rf();},1000);}
+function tog(){G.daily.morning.omraamDone=!G.daily.morning.omraamDone;sd();uh();rMorn(document.getElementById('pm'));}
+
+// CATCH — AI powered
+const SYS=`You are the Inner Architect — Davide's personal belief transformation guide. Draw from: David Bayer (Primal/Powerful Mind), Neville Goddard (assume the wish fulfilled), Joe Dispenza (emotion as blueprint), Napoleon Hill (autosuggestion), Omraam Aivanhov (inner court), Bashar (belief excavation), Kevin Trudeau (subconscious reprogramming), Bob Proctor (paradigms), and the full ancient canon: Hermetic, Bible, Quran, Stoicism, Buddhism, Vedic, Kabbalah, Taoism, Sufism. Declaration: "I am a gifted audio professional surrounded by mentors who see, value and elevate me." Respond ONLY with valid JSON, no preamble: {"cluster":"unwelcome|notSmart|unsafe|fraud|happy","primalMind":"exact old belief","newTruth":"opposite already true first person present","sacredVerse":"one verse","sacredSource":"reference","tradition":"tradition","bodyAnchor":"one physical practice","teacherLine":"one teacher line","teacherName":"teacher","emergencyLine":"short verse"}`;
+
+function rCatch(el){
+  el.innerHTML=`
+<div class="st">✦ Process a Catch</div>
+<div style="font-size:.85rem;color:var(--muted);margin-bottom:18px;line-height:1.65">Write what the old voice is saying. The Architect will name it, flip it, and seal it with ancient wisdom.</div>
+<div class="card">
+  <label class="lb">What is the Primal Mind saying right now?</label>
+  <textarea id="cin" rows="4" style="min-height:100px;font-size:1.02rem" placeholder="The fear says... / I'm noticing... / The old voice is...">${G.ci||''}</textarea>
+  <div style="display:flex;gap:8px;margin-top:12px">
+    <button class="btn" style="margin:0;flex:1" id="cbtn" onclick="doC()">Process with the Architect</button>
+    <button onclick="basharQ()" style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--muted);cursor:pointer;font-size:1rem">◈</button>
+  </div>
+</div>
+<div id="bq" style="display:none;margin-bottom:14px"></div>
+<div id="cload" style="display:none;text-align:center;padding:32px"><div class="sp" style="margin-bottom:16px"></div><div style="font-size:.78rem;color:var(--muted);font-style:italic">The Architect draws from the ancient canon...</div></div>
+<div id="cerr" style="display:none"></div>
+<div id="cres"></div>
+<div id="cpast"></div>`;
+  rPast();
+}
+
+function basharQ(){
+  const b=document.getElementById('bq');if(!b)return;
+  const q=Math.random()>.5?'A':'B';
+  const tx=q==='A'?"What would you have to believe is true about yourself to feel exactly what you're feeling right now?":"If you allowed yourself to be who you really prefer to be — what are you afraid might happen?";
+  b.style.display='block';
+  b.innerHTML=`<div class="card" style="border-left:3px solid #7c3aed;background:#0c0a1a"><div style="font-family:'Cinzel',serif;font-size:.6rem;color:#9f7aea;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px">Bashar · Excavation Question ${q}</div><div style="font-size:.97rem;font-style:italic;line-height:1.65">"${tx}"</div><div style="font-size:.74rem;color:var(--muted);margin-top:10px">Sit with this. Let the answer surface. Write your catch above.</div></div>`;
+}
+
+async function doC(){
+  const inp=document.getElementById('cin')?.value||'';
+  if(!inp.trim())return;
+  if(!G.key){alert('Add your Anthropic API key in Settings first.');go('s');return;}
+  G.ci=inp;
+  document.getElementById('cres').innerHTML='';
+  document.getElementById('cerr').style.display='none';
+  document.getElementById('cload').style.display='block';
+  document.getElementById('cbtn').disabled=true;
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':G.key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:800,system:SYS,messages:[{role:'user',content:inp.trim()}]})});
+    const d=await r.json();
+    if(d.error)throw new Error(d.error.message);
+    const tx=d.content?.find(b=>b.type==='text')?.text||'';
+    const res=JSON.parse(tx.replace(/```json\n?|\n?```/g,'').trim());
+    document.getElementById('cload').style.display='none';
+    document.getElementById('cbtn').disabled=false;
+    showRes(res,inp);
+  }catch(e){
+    document.getElementById('cload').style.display='none';
+    document.getElementById('cbtn').disabled=false;
+    const er=document.getElementById('cerr');er.style.display='block';
+    er.innerHTML=`<div class="card" style="background:#120808;border-color:var(--danger);color:var(--dt);font-size:.85rem;line-height:1.6">Could not connect.<br><span style="color:var(--muted);font-size:.8rem">${e.message}</span></div>`;
+  }
+}
+
+function showRes(r,raw){
+  const el=document.getElementById('cres');if(!el)return;
+  el.innerHTML=`
+<div style="background:#120808;border:1px solid var(--danger);border-radius:12px;padding:16px;margin-bottom:12px">
+  <div style="font-family:'Cinzel',serif;font-size:.6rem;color:#ef4444;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px">Primal Mind · The Old Program</div>
+  <div style="font-size:1rem;line-height:1.6;color:#fca5a5">"${r.primalMind}"</div>
+</div>
+<div class="gc">
+  <div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px">Powerful Mind · The New Truth</div>
+  <div style="font-size:1.06rem;line-height:1.7;font-style:italic">"${r.newTruth}"</div>
+</div>
+<div class="card">
+  <div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold);letter-spacing:.16em;text-transform:uppercase;margin-bottom:12px">Sacred Seal · ${r.tradition||''}</div>
+  <div class="vs">"${r.sacredVerse}"</div>
+  <div class="vss" style="margin-top:5px">— ${r.sacredSource}</div>
+</div>
+${r.teacherLine?`<div class="card" style="background:var(--surface2)"><div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--muted);letter-spacing:.14em;margin-bottom:8px">${(r.teacherName||'').toUpperCase()}</div><div style="font-size:.95rem;font-style:italic;line-height:1.65">"${r.teacherLine}"</div></div>`:''}
+<div class="card" style="background:#080f0d;border-color:var(--safe)">
+  <div style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--st);letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px">Body Anchor · Do This Now</div>
+  <div style="font-size:.95rem;line-height:1.65">${r.bodyAnchor}</div>
+</div>
+${r.emergencyLine?`<div class="card" style="background:#080d0a;border-color:#1a3a2a"><div style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--muted);letter-spacing:.14em;margin-bottom:6px">IF IT SURGES AGAIN</div><div style="font-size:.9rem;font-style:italic;color:var(--st)">"${r.emergencyLine}"</div></div>`:''}
+<button class="btn" id="logbtn" onclick="logCatch(this)">Log This Catch — And So It Is</button>`;
+  el.dataset.res=JSON.stringify(r);
+}
+
+
+function logCatch(btn){
+  const el=document.getElementById('cres');if(!el)return;
+  const res=JSON.parse(el.dataset.res||'{}');
+  const c={primalMind:res.primalMind||G.ci,newTruth:res.newTruth||'',cluster:res.cluster||'',raw:G.ci,ts:Date.now()};
+  G.daily.catches=[...(G.daily.catches||[]),c];
+  sd();uh();btn.textContent='✓ Logged — And so it is.';btn.disabled=true;rPast();
+}
+
+function rPast(){
+  const el=document.getElementById('cpast');if(!el)return;
+  const c=G.daily.catches||[];if(!c.length){el.innerHTML='';return;}
+  el.innerHTML=`<div class="st" style="margin-top:8px">Today's Catches (${c.length})</div>${c.slice().reverse().map(x=>`<div class="card" style="margin-bottom:8px"><div style="font-size:.72rem;color:var(--muted);margin-bottom:4px">${new Date(x.ts).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}</div><div style="font-size:.85rem;color:#fca5a5;margin-bottom:4px">"${x.primalMind}"</div><div style="font-size:.85rem;font-style:italic">→ "${x.newTruth}"</div></div>`).join('')}`;
+}
+
+// EVENING
+function rEve(el){
+  const e=G.daily.evening||{};
+  el.innerHTML=`
+<div class="st">🌙 Evening Practice</div>
+<div class="card">
+  <div class="sl">I · Evidence Log ${e.evidence?'<span class="sc">✓</span>':''}</div>
+  <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px;line-height:1.55">"Today I noticed..." — one moment where reality reflected the new belief back to you. The infinite made visible. Ein Sof in the specific.</div>
+  <label class="lb">The moment:</label>
+  <textarea id="eev" rows="3" placeholder="Today I noticed...">${e.evidence||''}</textarea>
+  <button class="btn" onclick="sealEv()">Seal It — And So It Is</button>
+  ${e.evSealed?`<div style="text-align:center;margin-top:10px;font-size:.8rem;color:var(--gold);font-style:italic">✦ Sealed in the Evidence Book — And so it is.</div>`:''}
+</div>
+<div class="card">
+  <div class="sl">II · Sound That Moved Me ${e.sound?'<span class="sc">✓</span>':''}</div>
+  <label class="lb">What was it? Where did you feel it?</label>
+  <textarea id="esnd" rows="3" placeholder="A sound, a piece of music, a texture...">${e.sound||''}</textarea>
+  <button class="bg2" onclick="sevf('sound',document.getElementById('esnd').value)">Log Sound</button>
+</div>
+<div class="gc">
+  <div class="sl">III · The Sleep Scene ${e.sleepDone?'<span class="sc">✓</span>':''}</div>
+  <div style="font-size:.8rem;color:var(--muted);margin-bottom:12px;line-height:1.6"><span style="font-family:'Cinzel',serif;font-size:.6rem;color:var(--gold-dim)">Neville Goddard · Matthew 21:22</span><br><br><em>"Believe you have received it — and it will be yours."</em><br><br>Your mentor. Their words. The warmth. Fall asleep inside this scene. The last feeling before sleep plants the seed.</div>
+  <label class="lb">Describe your scene:</label>
+  <textarea id="esl" rows="4" placeholder="I am in... My mentor says... I feel...">${e.sleepScene||''}</textarea>
+  <button class="btn" onclick="sevf('sleepScene',document.getElementById('esl').value);sevf('sleepDone',true);rEve(document.getElementById('pe'))">Seal the Sleep Scene</button>
+  <div style="margin-top:16px;padding:14px;background:rgba(201,164,85,.04);border-radius:10px">
+    <div class="vs" style="font-size:.92rem">"Assume the feeling of the wish fulfilled and observe the route that your attention follows."</div>
+    <div class="vss" style="margin-top:5px">— Neville Goddard</div>
+  </div>
+</div>
+<div style="text-align:center;padding:16px 0;font-size:.85rem;font-style:italic;color:var(--muted)">"What you seek is seeking you." — Rumi</div>`;
+}
+
+function sevf(f,v){G.daily.evening=G.daily.evening||{};G.daily.evening[f]=v;sd();uh();}
+function sealEv(){
+  const v=document.getElementById('eev')?.value||'';if(!v.trim())return;
+  G.daily.evening.evidence=v;G.daily.evening.evSealed=true;
+  G.ev=[{moment:v,sound:G.daily.evening.sound||'',date:dk(),id:Date.now()},...G.ev];
+  S.s('ia-ev',G.ev);sd();uh();rEve(document.getElementById('pe'));
+}
+
+// LOG
+function rLog(el){
+  const fm=d=>new Date(d).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'});
+  const trad=[
+    {t:'Hermetic',l:'"As above, so below. As within, so without."',s:'Hermes Trismegistus',n:'The root of all. Your inner state IS your outer reality.'},
+    {t:'Biblical',l:'"The Kingdom of God is within you."',s:'Luke 17:21',n:"Jesus's teaching is a manual for inner engineering."},
+    {t:'Quranic',l:'"Allah will not change a people until they change what is within themselves."',s:'Quran 13:11',n:'Inner change always precedes outer change.'},
+    {t:'Stoic',l:'"You have power over your mind — not outside events."',s:'Marcus Aurelius',n:'The Primal Mind catch is Stoic premeditatio, 2,000 years old.'},
+    {t:'Buddhist',l:'"All that we are is the result of what we have thought."',s:'Dhammapada',n:'The breath anchor. Non-identification. Beginner\'s mind.'},
+    {t:'Vedic',l:'"You are what your deep, driving desire is."',s:'Brihadaranyaka Upanishad',n:'Your declaration is your desire stated clearly as dharma.'},
+    {t:'Kabbalistic',l:'"The outer world is a garment. The inner is the body wearing it."',s:'Kabbalah',n:'Your evidence log is Ein Sof — the infinite made visible.'},
+    {t:'Taoist',l:'"To the mind that is still, the whole universe surrenders."',s:'Lao Tzu',n:'Wu wei — open the DAW with no goal. Pure presence.'},
+    {t:'Sufi',l:'"What you seek is seeking you."',s:'Rumi',n:'The sleep scene is the meeting point. The beloved approaches.'},
+  ];
+  el.innerHTML=`
+<div class="st">◈ The Evidence Book</div>
+<div style="font-size:.82rem;color:var(--muted);margin-bottom:18px;line-height:1.6">Every entry is the infinite speaking through the specific. Ein Sof made visible in your life.</div>
+${G.ev.length===0?`<div class="es"><div class="ei">◈</div><div class="et">The book is empty. Your first entry will be the first brick of the new reality.</div></div>`:G.ev.map((e,i)=>`<div class="card" style="animation:fadeUp ${.1+i*.04}s ease"><div style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold-dim);letter-spacing:.14em;margin-bottom:8px">${fm(e.date)}</div><div style="font-size:.97rem;line-height:1.6">${e.moment}</div>${e.sound?`<div style="margin-top:8px;font-size:.8rem;color:var(--muted);font-style:italic">♪ ${e.sound}</div>`:''}<div style="margin-top:10px;font-size:.7rem;color:var(--gold);font-style:italic">And so it is.</div></div>`).join('')}
+<div class="st" style="margin-top:24px">Sacred Seals by Cluster</div>
+${Object.entries(SEALS).map(([k,v])=>`<div class="card" style="margin-bottom:8px"><div style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:8px">${k}</div><div class="vs">"${v.v}"</div><div class="vss" style="margin-top:4px">— ${v.s}</div></div>`).join('')}
+<div class="st" style="margin-top:24px">The Ancient Traditions</div>
+${trad.map(x=>`<div class="card" style="margin-bottom:8px"><div style="font-family:'Cinzel',serif;font-size:.58rem;color:var(--gold);letter-spacing:.14em;text-transform:uppercase;margin-bottom:6px">${x.t}</div><div class="vs" style="font-size:.9rem">"${x.l}"</div><div class="vss" style="margin-top:4px">— ${x.s}</div><div style="font-size:.78rem;color:var(--muted);margin-top:8px;line-height:1.5">${x.n}</div></div>`).join('')}`;
+}
+
+// SETTINGS
+function rSet(el){
+  el.innerHTML=`
+<div class="st">⚙ Settings</div>
+<div class="card">
+  <div style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px">Anthropic API Key</div>
+  <input type="password" id="akey" value="${G.key}" placeholder="sk-ant-..."/>
+  <button class="btn" onclick="saveKey()">Save API Key</button>
+  <div style="margin-top:10px;font-size:.78rem;color:var(--muted);line-height:1.6">Required for AI catch processing. Get at <span style="color:var(--gold)">console.anthropic.com/settings/keys</span>. Stored only on this device.</div>
+</div>
+<div class="card">
+  <div style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px">Install as Native App</div>
+  <div style="font-size:.85rem;color:var(--muted);line-height:1.65">In Chrome on Android:<br>1. Tap the <strong style="color:var(--text)">⋮ menu</strong> (top right)<br>2. Tap <strong style="color:var(--text)">Add to Home screen</strong><br>3. Tap <strong style="color:var(--text)">Add</strong><br><br>The app installs fullscreen, no browser chrome, exactly like a native app.</div>
+</div>
+<div class="card">
+  <div style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px">Your Declaration</div>
+  <div style="font-style:italic;font-size:.95rem;line-height:1.6">"${DECL}"</div>
+</div>
+<div class="card">
+  <div style="font-family:'Cinzel',serif;font-size:.62rem;letter-spacing:.14em;color:var(--gold);text-transform:uppercase;margin-bottom:10px">Reset Today</div>
+  <button class="bg2" onclick="resetDay()">Reset Today's Practice</button>
+  <div style="margin-top:8px;font-size:.75rem;color:var(--muted)">Clears today's entries. Evidence log is preserved.</div>
+</div>
+<div style="text-align:center;margin-top:24px;font-size:.72rem;color:var(--muted);line-height:1.8;font-style:italic">
+  "As a man thinketh in his heart, so is he."<br>The Inner Architect v2.0<br>Built for Davide · All traditions, one practice<br>100% offline · No API needed
+</div>`;
+}
+
+
+function resetDay(){if(!confirm('Reset today\'s practice? Evidence log is preserved.'))return;G.daily={morning:{},evening:{},catches:[]};G.dc=0;G.ci='';sd();uh();go('h');}
+
+// EMERGENCY
+const BP=[{l:'Breathe In',d:4000,ex:true},{l:'Hold',d:2000,ex:true},{l:'Let It Go',d:6000,ex:false},{l:'Rest',d:2000,ex:false}];
+let bx=0;
+function showE(){document.getElementById('eov').classList.add('on');bx=0;bStep();}
+function hideE(){document.getElementById('eov').classList.remove('on');if(G.bt)clearTimeout(G.bt);}
+function bStep(){const p=BP[bx%4];const c=document.getElementById('bc'),l=document.getElementById('blbl');if(c)c.className='bc'+(p.ex?' ex':'');if(l)l.textContent=p.l;bx++;G.bt=setTimeout(bStep,p.d);}
+
+// STREAK
+function chkStreak(){const last=S.g('ia-ld'),today=dk();if(!last){S.s('ia-ld',today);G.streak=1;}else{const diff=Math.round((new Date(today)-new Date(last))/86400000);if(diff===0){}else if(diff===1){G.streak++;S.s('ia-ld',today);}else{G.streak=1;S.s('ia-ld',today);}}S.s('ia-st',G.streak);}
+
+// PWA
+function injectManifest(){
+  const m={name:"The Inner Architect",short_name:"Architect",description:"Belief transformation — ancient wisdom, daily practice",start_url:"./",display:"standalone",background_color:"#06070f",theme_color:"#06070f",orientation:"portrait",icons:[{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%2306070f'/%3E%3Ccircle cx='96' cy='96' r='70' fill='none' stroke='%23c9a455' stroke-width='2' opacity='.6'/%3E%3Cpolygon points='96,40 148,112 44,112' fill='none' stroke='%23c9a455' stroke-width='2' opacity='.7'/%3E%3Cpolygon points='96,152 44,80 148,80' fill='none' stroke='%23c9a455' stroke-width='2' opacity='.7'/%3E%3Ccircle cx='96' cy='96' r='8' fill='%23c9a455'/%3E%3C/svg%3E",sizes:"192x192",type:"image/svg+xml"},{src:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%2306070f'/%3E%3Ccircle cx='256' cy='256' r='190' fill='none' stroke='%23c9a455' stroke-width='3' opacity='.6'/%3E%3Cpolygon points='256,100 380,290 132,290' fill='none' stroke='%23c9a455' stroke-width='3' opacity='.7'/%3E%3Cpolygon points='256,412 132,222 380,222' fill='none' stroke='%23c9a455' stroke-width='3' opacity='.7'/%3E%3Ccircle cx='256' cy='256' r='18' fill='%23c9a455'/%3E%3C/svg%3E",sizes:"512x512",type:"image/svg+xml"}]};
+  const blob=new Blob([JSON.stringify(m)],{type:'application/manifest+json'});
+  const link=document.createElement('link');link.rel='manifest';link.href=URL.createObjectURL(blob);document.head.appendChild(link);
+}
+
+function saveKey(){const k=document.getElementById('akey')?.value||'';G.key=k;S.s('ia-k',k);alert('API key saved. The Architect is ready.');}
+
+// BOOT
+function boot(){
+  injectManifest();
+  load();chkStreak();uh();go('h');
+  setTimeout(()=>{
+    const isA=/Android/i.test(navigator.userAgent);
+    const isSA=window.matchMedia('(display-mode:standalone)').matches;
+    if(isA&&!isSA)document.getElementById('ib').classList.add('on');
+  },3000);
+}
+boot();
+</script>
+</body>
+</html>
